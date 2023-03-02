@@ -3,12 +3,6 @@ package Unit;
 import java.util.ArrayList;
 
 public class Crossbowman extends Shooter {
-
-    protected Crossbowman(String name, float hp, int maxHp, int attack, int damageMin, int damageMax, int defense,
-                       int speed, int cartridges, int range, int posX, int posY) {
-        super(name, hp, maxHp, attack, damageMin, damageMax, defense, speed, cartridges, range, posX, posY);
-    }
-
     public Crossbowman(String name, Vector2D coords) {
         super(name, 60.f, 60, 7, 3, 7, 4,
                 9, 20, 10, coords.posX, coords.posY);
@@ -23,4 +17,22 @@ public class Crossbowman extends Shooter {
                 .append(" \t| Arrows:").append(Crossbowman.super.cartridges)
                 .append("\t|").append("\t| (X.Y) : ").append(Crossbowman.super.coords.posX).append(".").append(Crossbowman.super.coords.posY);
     }
+
+    @Override
+    public void step(ArrayList<Human> team1, ArrayList<Human> team2) {
+        if (state.equals("Die") || cartridges == 0) return;
+        Human victim = team2.get(findNearest(team2));
+        float damage = (victim.defense - attack)>0 ? damageMin : (victim.defense - attack)<0 ? damageMax : (damageMin+damageMax)/2;
+        victim.getDamage(damage);
+        for (Human human: team1) {
+            if (human.getInfo().toString().split(":")[0].equals("Фермер") && human.state.equals("Stand")) {
+                human.state = "Busy";
+                return;
+            }
+        }
+        cartridges--;
+    }
+
+
+
 }

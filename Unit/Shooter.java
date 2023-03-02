@@ -7,35 +7,37 @@ public abstract class Shooter extends Human {
     protected int cartridges;
 
     protected Shooter(String name, float hp, int maxHp, int attack, int damageMin,
-            int damageMax, int defense, int speed, int cartridges,
-            int range, int posX, int posY) {
+                   int damageMax, int defense, int speed, int cartridges,
+                   int range, int posX, int posY) {
         super(name, hp, maxHp, attack, damageMin, damageMax, defense, speed, posX, posY);
         this.range = range;
         this.cartridges = cartridges;
     }
-
-    // Реализовать метод step() лучников.
-    // 3.1 Если жизнь равна нулю или стрел нет, завершить обработку.
-    // 3.2 Поиск среди противников наиболее приближённого.
-    // 3.3 Нанести среднее повреждение найденному противнику.
-    // 3.4 Найти среди своих крестьянина.
-    // 3.5 Если найден завершить метод иначе уменьшить запас стрел на одну.
+    // Стрельба и стрелы
     @Override
     public void step(ArrayList<Human> team1, ArrayList<Human> team2) {
-        if (state.equals("Die") || cartridges == 0)
-            return;
+        if (state.equals("Die") || cartridges == 0) return;
         Human victim = team2.get(findNearest(team2));
-        // int a = boolean ? first : second;
-        float damage = (victim.defense - attack) > 0 ? damageMin
-                : (victim.defense - attack) < 0 ? damageMax : (damageMin + damageMax) / 2;
+        float damage = (victim.defense - attack)>0 ? damageMin : (victim.defense - attack)<0 ? damageMax : (damageMin+damageMax)/2;
         victim.getDamage(damage);
-        for (Human human : team1) {
+        for (Human human: team1) {
             if (human.getInfo().toString().split(":")[0].equals("Фермер") && human.state.equals("Stand")) {
                 human.state = "Busy";
                 return;
             }
         }
         cartridges--;
+    }
+
+    @Override
+    public String toString() {
+        return name +
+                " H:" + Math.round(hp) +
+                " D:" + defense +
+                " A:" + attack +
+                " Dmg:" + Math.round(Math.abs((damageMin+damageMax)/2)) +
+                " Shots:" + cartridges + " " +
+                state;
     }
 
 }

@@ -1,5 +1,7 @@
 package Unit;
 
+import java.util.ArrayList;
+
 public class Witch extends Mag{
 
     public Witch(String name, float hp, int maxHp, int attack, int damageMin, int damageMax,
@@ -20,4 +22,17 @@ public class Witch extends Mag{
                 .append(" \t| MP:\t").append(Witch.super.mana)
                 .append("\t|").append("\t| (X.Y) : ").append(Witch.super.coords.posX).append(".").append(Witch.super.coords.posY);
     }
+
+
+
+    @Override
+    public void step(ArrayList<Human> team1, ArrayList<Human> team2) {
+        for (Human human: team1) {
+            if (human.hp < human.maxHp & !human.state.equals("Die")) {
+                human.getDamage(damageMax);
+                return;
+            }
+        }
+    }
+    
 }
